@@ -232,7 +232,7 @@ const renderStage = () => {
 
   const xlim = width;
   const ylim = height;
-  const division = 8;
+  const division = 20;
 
   for (let x = 0; x <= xlim / division; x++) {
     for (let y = 0; y <= ylim / division; y++) {

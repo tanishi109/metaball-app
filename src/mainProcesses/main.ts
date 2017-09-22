@@ -13,10 +13,15 @@ import * as url from 'url'
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow () {
+  const Screen = electron.screen;
+  const size = Screen.getPrimaryDisplay().size;
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 400,
+    x: 0,
+    y: 0,
+    width: size.width,
+    height: size.height,
     titleBarStyle: "hidden",
     transparent: true,
     resizable: false,
@@ -29,6 +34,7 @@ function createWindow () {
     slashes: true,
   }))
 
+  mainWindow.setIgnoreMouseEvents(true);
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 

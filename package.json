@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node fuse",
     "app": "electron .",
-    "release": "cross-env NODE_ENV=production node fuse && electron-packager ./ 'Release' --platform=darwin --arch=x64 --overwrite"
+    "release": "cross-env NODE_ENV=production node fuse && electron-packager ./ 'Release' --platform=darwin --arch=x64 --overwrite  --icon ./dist/assets/logo.icns"
   },
   "author": "",
   "license": "ISC",

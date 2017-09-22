@@ -29,7 +29,7 @@ const initStage = () => {
   canvas.setAttribute("width", width);
   canvas.setAttribute("height", height);
 
-  Array.from(" ".repeat(6)).map((_, i) => {
+  Array.from(" ".repeat(12)).map((_, i) => {
     vars.boids.push({
       x: Math.random() * width,
       y: Math.random() * height,
@@ -161,6 +161,8 @@ const renderStage = () => {
       c3, c4,
     ] = vc;
 
+    // ctx.strokeStyle = "#fff";
+
     let ary = [];
     // holizontal
     if (flg === "1100" || flg === "0011") {
@@ -230,13 +232,15 @@ const renderStage = () => {
     }
   };
 
-  const xlim = width;
-  const ylim = height;
-  const division = 20;
+  const xmin = boids.reduce((b1, b2) => ({x: Math.min(b1.x, b2.x)}), {x: width}).x - te;
+  const ymin = boids.reduce((b1, b2) => ({y: Math.min(b1.y, b2.y)}), {y: height}).y - te;
+  const xlim = boids.reduce((b1, b2) => ({x: Math.max(b1.x, b2.x)}), {x: 0}).x + te;
+  const ylim = boids.reduce((b1, b2) => ({y: Math.max(b1.y, b2.y)}), {y: 0}).y + te;
+  const division = 8;
 
-  for (let x = 0; x <= xlim / division; x++) {
-    for (let y = 0; y <= ylim / division; y++) {
-      drawByConcentration(boids, x * division, y * division, division);
+  for (let x = xmin; x <= xlim; x += division) {
+    for (let y = ymin; y <= ylim; y += division) {
+      drawByConcentration(boids, x, y, division);
     }
   }
 

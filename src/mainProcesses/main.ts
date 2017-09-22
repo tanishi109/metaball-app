@@ -14,12 +14,19 @@ let mainWindow: Electron.BrowserWindow | null
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({
+    width: 400,
+    height: 400,
+    titleBarStyle: "hidden",
+    transparent: true,
+    resizable: false,
+    alwaysOnTop: true,
+  })
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(app.getAppPath(), 'dist/windows/main/index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   }))
 
   // Open the DevTools.

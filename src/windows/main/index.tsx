@@ -1,6 +1,11 @@
 import * as React from "react";
 import {render} from "react-dom";
 
+import Canvas from "~/components/Canvas";
+import {
+  Root,
+} from "./style";
+
 interface Props {
 }
 interface State {
@@ -14,11 +19,13 @@ class Main extends React.Component<Props, State> {
 
   render(): JSX.Element {
     return (
-      <div>
-        <h1>sample app</h1>
-      </div>
+      <Root>
+        <Canvas />
+      </Root>
     );
   }
 }
+
+import "~/styles/base";
 
 render(<Main />, document.getElementById("root"));

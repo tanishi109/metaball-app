@@ -19,7 +19,7 @@ Sparky.task("default", ["copy-html"], () => {
 
   if (isDev) {
     fuse.dev({
-      port: 8080,
+      port: 8083,
       httpServer: false,
     });
 

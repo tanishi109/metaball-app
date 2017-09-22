@@ -1,0 +1,26 @@
+{
+  "name": "electron-metaball",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/mainProcesses/main.js",
+  "scripts": {
+    "start": "node fuse",
+    "app": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fuse-box": "^2.2.31",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "styled-components": "^2.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.5",
+    "@types/react-dom": "^15.5.4",
+    "cross-env": "^5.0.5",
+    "electron": "^1.7.6",
+    "electron-packager": "^9.1.0",
+    "typescript": "^2.5.2"
+  }
+}

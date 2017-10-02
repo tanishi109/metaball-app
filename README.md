@@ -2,6 +2,8 @@
 
 Metaball Boids run about in your desktop.
 
+![img](https://github.com/tanishi109/metaball-app/blob/master/readmeAssets/screenshot.png?raw=true)
+
 # js dev
 
 ## run

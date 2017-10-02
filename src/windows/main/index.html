@@ -24,6 +24,11 @@
       var script = document.createElement('script')
       script.src = "./wasm.js"
       document.body.appendChild(script)
+
+      Module.onRuntimeInitialized = () => {
+        var hello = Module.cwrap('hello_world', 'int', []);
+        console.log(hello(12))
+      }
     })
 
     // load compiled index.tsx

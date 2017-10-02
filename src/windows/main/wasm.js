@@ -2009,7 +2009,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = Runtime.GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 15520;
+STATICTOP = STATIC_BASE + 15216;
 /* global initializers */  __ATINIT__.push();
 
 
@@ -2018,7 +2018,7 @@ memoryInitializer = Module["wasmJSMethod"].indexOf("asmjs") >= 0 || Module["wasm
 
 
 
-var STATIC_BUMP = 15520;
+var STATIC_BUMP = 15216;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -2229,13 +2229,6 @@ function copyTempDouble(ptr) {
     }
 
   function _pthread_mutexattr_destroy() {}
-
-  
-  
-  function _emscripten_memcpy_big(dest, src, num) {
-      HEAPU8.set(HEAPU8.subarray(src, src+num), dest);
-      return dest;
-    }  
 
   function ___cxa_allocate_exception(size) {
       return _malloc(size);
@@ -5567,6 +5560,11 @@ function copyTempDouble(ptr) {
 
    
 
+  
+  function _emscripten_memcpy_big(dest, src, num) {
+      HEAPU8.set(HEAPU8.subarray(src, src+num), dest);
+      return dest;
+    } 
 
   function ___syscall6(which, varargs) {SYSCALLS.varargs = varargs;
   try {
@@ -5694,9 +5692,9 @@ function nullFunc_iii(x) { Module["printErr"]("Invalid function pointer called w
 
 function nullFunc_viii(x) { Module["printErr"]("Invalid function pointer called with signature 'viii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
 
-Module['wasmTableSize'] = 2240;
+Module['wasmTableSize'] = 2112;
 
-Module['wasmMaxTableSize'] = 2240;
+Module['wasmMaxTableSize'] = 2112;
 
 function invoke_iiii(index,a1,a2,a3) {
   try {
@@ -5790,7 +5788,7 @@ function invoke_viii(index,a1,a2,a3) {
 
 Module.asmGlobalArg = { "Math": Math, "Int8Array": Int8Array, "Int16Array": Int16Array, "Int32Array": Int32Array, "Uint8Array": Uint8Array, "Uint16Array": Uint16Array, "Uint32Array": Uint32Array, "Float32Array": Float32Array, "Float64Array": Float64Array, "NaN": NaN, "Infinity": Infinity };
 
-Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_iiii": nullFunc_iiii, "nullFunc_i": nullFunc_i, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_ii": nullFunc_ii, "nullFunc_ji": nullFunc_ji, "nullFunc_v": nullFunc_v, "nullFunc_viiii": nullFunc_viiii, "nullFunc_iii": nullFunc_iii, "nullFunc_viii": nullFunc_viii, "invoke_iiii": invoke_iiii, "invoke_i": invoke_i, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_ii": invoke_ii, "invoke_ji": invoke_ji, "invoke_v": invoke_v, "invoke_viiii": invoke_viiii, "invoke_iii": invoke_iii, "invoke_viii": invoke_viii, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_key_create": _pthread_key_create, "__Unwind_FindEnclosingFunction": __Unwind_FindEnclosingFunction, "_emscripten_get_callstack_js": _emscripten_get_callstack_js, "___gxx_personality_v0": ___gxx_personality_v0, "_pthread_rwlock_unlock": _pthread_rwlock_unlock, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___buildEnvironment": ___buildEnvironment, "_pthread_cond_init": _pthread_cond_init, "__Unwind_GetIPInfo": __Unwind_GetIPInfo, "_pthread_mutexattr_destroy": _pthread_mutexattr_destroy, "__emscripten_traverse_stack": __emscripten_traverse_stack, "___setErrNo": ___setErrNo, "___cxa_free_exception": ___cxa_free_exception, "_pthread_key_delete": _pthread_key_delete, "___cxa_allocate_exception": ___cxa_allocate_exception, "_emscripten_memcpy_big": _emscripten_memcpy_big, "___resumeException": ___resumeException, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "_pthread_condattr_setclock": _pthread_condattr_setclock, "_pthread_getspecific": _pthread_getspecific, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "_pthread_rwlock_rdlock": _pthread_rwlock_rdlock, "_pthread_cond_signal": _pthread_cond_signal, "_pthread_mutex_destroy": _pthread_mutex_destroy, "_abort": _abort, "_pthread_condattr_init": _pthread_condattr_init, "_pthread_mutexattr_settype": _pthread_mutexattr_settype, "_getenv": _getenv, "_pthread_condattr_destroy": _pthread_condattr_destroy, "___syscall54": ___syscall54, "___unlock": ___unlock, "___syscall140": ___syscall140, "_pthread_mutexattr_init": _pthread_mutexattr_init, "_pthread_setspecific": _pthread_setspecific, "_dladdr": _dladdr, "___cxa_throw": ___cxa_throw, "___lock": ___lock, "___syscall6": ___syscall6, "___syscall4": ___syscall4, "_pthread_cond_destroy": _pthread_cond_destroy, "_llvm_trap": _llvm_trap, "_pthread_mutex_init": _pthread_mutex_init, "__Unwind_Backtrace": __Unwind_Backtrace, "___syscall146": ___syscall146, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
+Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_iiii": nullFunc_iiii, "nullFunc_i": nullFunc_i, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_ii": nullFunc_ii, "nullFunc_ji": nullFunc_ji, "nullFunc_v": nullFunc_v, "nullFunc_viiii": nullFunc_viiii, "nullFunc_iii": nullFunc_iii, "nullFunc_viii": nullFunc_viii, "invoke_iiii": invoke_iiii, "invoke_i": invoke_i, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_ii": invoke_ii, "invoke_ji": invoke_ji, "invoke_v": invoke_v, "invoke_viiii": invoke_viiii, "invoke_iii": invoke_iii, "invoke_viii": invoke_viii, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_key_create": _pthread_key_create, "__Unwind_FindEnclosingFunction": __Unwind_FindEnclosingFunction, "_emscripten_get_callstack_js": _emscripten_get_callstack_js, "___gxx_personality_v0": ___gxx_personality_v0, "_pthread_rwlock_unlock": _pthread_rwlock_unlock, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___buildEnvironment": ___buildEnvironment, "_pthread_cond_init": _pthread_cond_init, "__Unwind_GetIPInfo": __Unwind_GetIPInfo, "_pthread_mutexattr_destroy": _pthread_mutexattr_destroy, "__emscripten_traverse_stack": __emscripten_traverse_stack, "___setErrNo": ___setErrNo, "___cxa_free_exception": ___cxa_free_exception, "_pthread_key_delete": _pthread_key_delete, "___cxa_allocate_exception": ___cxa_allocate_exception, "_pthread_rwlock_rdlock": _pthread_rwlock_rdlock, "___resumeException": ___resumeException, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "_pthread_condattr_setclock": _pthread_condattr_setclock, "_pthread_getspecific": _pthread_getspecific, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_pthread_cond_signal": _pthread_cond_signal, "_pthread_mutex_destroy": _pthread_mutex_destroy, "_abort": _abort, "_pthread_condattr_init": _pthread_condattr_init, "_pthread_mutexattr_settype": _pthread_mutexattr_settype, "_getenv": _getenv, "_pthread_condattr_destroy": _pthread_condattr_destroy, "___syscall54": ___syscall54, "___unlock": ___unlock, "___syscall140": ___syscall140, "_pthread_mutexattr_init": _pthread_mutexattr_init, "_pthread_setspecific": _pthread_setspecific, "_dladdr": _dladdr, "___cxa_throw": ___cxa_throw, "___lock": ___lock, "___syscall6": ___syscall6, "___syscall4": ___syscall4, "_pthread_cond_destroy": _pthread_cond_destroy, "_llvm_trap": _llvm_trap, "_pthread_mutex_init": _pthread_mutex_init, "__Unwind_Backtrace": __Unwind_Backtrace, "___syscall146": ___syscall146, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (Module.asmGlobalArg, Module.asmLibraryArg, buffer);
@@ -5951,12 +5949,6 @@ var real_establishStackSpace = asm["establishStackSpace"]; asm["establishStackSp
   return real_establishStackSpace.apply(null, arguments);
 };
 
-var real__memmove = asm["_memmove"]; asm["_memmove"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real__memmove.apply(null, arguments);
-};
-
 var real____rdl_realloc = asm["___rdl_realloc"]; asm["___rdl_realloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -5985,6 +5977,12 @@ var real____rdl_shrink_in_place = asm["___rdl_shrink_in_place"]; asm["___rdl_shr
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return real____rdl_shrink_in_place.apply(null, arguments);
+};
+
+var real__hello_world = asm["_hello_world"]; asm["_hello_world"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__hello_world.apply(null, arguments);
 };
 
 var real____rdl_alloc = asm["___rdl_alloc"]; asm["___rdl_alloc"] = function() {
@@ -6109,10 +6107,6 @@ var establishStackSpace = Module["establishStackSpace"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["establishStackSpace"].apply(null, arguments) };
-var _memmove = Module["_memmove"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_memmove"].apply(null, arguments) };
 var ___rdl_realloc = Module["___rdl_realloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -6133,6 +6127,10 @@ var ___rdl_shrink_in_place = Module["___rdl_shrink_in_place"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["___rdl_shrink_in_place"].apply(null, arguments) };
+var _hello_world = Module["_hello_world"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_hello_world"].apply(null, arguments) };
 var ___rdl_alloc = Module["___rdl_alloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');

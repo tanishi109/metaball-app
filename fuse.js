@@ -6,15 +6,15 @@ const {
 const {spawn} = require("child_process");
 const isDev = process.env.NODE_ENV !== "production";
 
-Sparky.task("copy-html", () => {
-  return Sparky.src("./**/*.html", {base: "./src/windows"}).dest("./dist/windows/");
+Sparky.task("copy-src", () => {
+  return Sparky.watch("**/*.(html|js|wasm)", {base: "src/windows"}).dest("dist/windows/");
 });
 
 Sparky.task("copy-assets", () => {
   return Sparky.src("./**/*", {base: "./src/assets"}).dest("./dist/assets/");
 });
 
-Sparky.task("default", ["copy-html", "copy-assets"], () => {
+Sparky.task("default", ["copy-src", "copy-assets"], () => {
   const fuse = FuseBox.init({
     homeDir: "src",
     sourcemaps: true,

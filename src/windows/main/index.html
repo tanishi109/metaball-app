@@ -10,6 +10,23 @@
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.5/dat.gui.min.js"></script>
   <script>
+    // To use fetch()
+    var electron = require('electron');
+    var webFrame = electron.webFrame;
+    webFrame.registerURLSchemeAsPrivileged('file');
+
+    // load wasm
+    var Module = {}
+    fetch('./app.wasm')
+    .then((response) => response.arrayBuffer())
+    .then((buffer) => {
+      Module.wasmBinary = buffer
+      var script = document.createElement('script')
+      script.src = "./wasm.js"
+      document.body.appendChild(script)
+    })
+
+    // load compiled index.tsx
     require('./index.js')
   </script>
 </html>

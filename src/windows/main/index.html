@@ -26,12 +26,18 @@
       document.body.appendChild(script)
 
       Module.onRuntimeInitialized = () => {
-        var hello = Module.cwrap('hello_world', 'int', []);
-        console.log(hello(12))
+        Module.noExitRuntime = true;
+        window.Module = Module;
+
+        mainScriptElem = document.createElement("script");
+        mainScriptElem.src = "./index.js";
+        document.body.appendChild(mainScriptElem);
       }
-    })
+    }).then((result) => {
+      console.log("result>>> ", result);
+    });
 
     // load compiled index.tsx
-    require('./index.js')
+    // require('./index.js')
   </script>
 </html>

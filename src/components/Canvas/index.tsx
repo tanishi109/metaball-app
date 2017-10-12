@@ -15,6 +15,12 @@ class Vars {
 }
 const vars = new Vars();
 
+const get_distance = window.Module.cwrap('get_distance', 'float', []);
+const getDistance = (x1, y1, x2, y2) => {
+  // return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  return get_distance(x1, y1, x2, y2);
+};
+
 const initStage = () => {
   const canvas = document.getElementById("stage");
   const ctx = canvas.getContext("2d");
@@ -38,10 +44,6 @@ const initStage = () => {
       id: i,
     });
   });
-};
-
-const getDistance = (x1, y1, x2, y2) => {
-  return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 };
 
 const renderStage = () => {

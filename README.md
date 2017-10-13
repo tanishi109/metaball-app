@@ -38,3 +38,6 @@ The file "/rust/wasm/app.wasm" will be created.
 ## load from js
 
 move `app.wasm` & `wasm.js` into `src/windows/main/*`
+```
+cp ./rust/wasm/target/wasm32-unknown-emscripten/debug/wasm.js ./src/windows/main/wasm.js && cp ./rust/wasm/app.wasm ./src/windows/main/app.wasm
+```

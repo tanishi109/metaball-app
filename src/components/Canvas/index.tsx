@@ -15,11 +15,25 @@ class Vars {
 }
 const vars = new Vars();
 
+const r = 5;
+
 const get_distance = window.Module.cwrap('get_distance', 'float', []);
 const getDistance = (x1, y1, x2, y2) => {
   // return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
   return get_distance(x1, y1, x2, y2);
 };
+
+const get_concentration = window.Module.cwrap('get_concentration', 'float', []);
+const c = 10; // 調整必要かも?
+const ts = r;
+const te = 40;
+const clim = 3;
+const getConcentration = (tm) => {
+  // return (c / ((ts - te) ** 2)) * ((tm - te) ** 2);
+  return get_concentration(tm, c, ts, te);
+};
+
+const get_flg = window.Module.cwrap('get_flg', 'string', ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
 
 const initStage = () => {
   const canvas = document.getElementById("stage");
@@ -50,12 +64,11 @@ const renderStage = () => {
   const {ctx, width, height, boids} = vars;
   ctx.clearRect(0, 0, width, height);
 
-  const r = 5;
-  boids.forEach((b) => {
-    ctx.beginPath();
-    // ctx.arc(b.x, b.y, r, 0, 360 * Math.PI / 180);
-    ctx.stroke();
-  });
+  // boids.forEach((b) => {
+  //   ctx.beginPath();
+  //   // ctx.arc(b.x, b.y, r, 0, 360 * Math.PI / 180);
+  //   ctx.stroke();
+  // });
 
   boids.forEach((boid) => {
     // rule1
@@ -118,42 +131,49 @@ const renderStage = () => {
     boid.y += boid.vy;
   });
 
-  const c = 10; // 調整必要かも?
-  const ts = r;
-  const te = 40;
-  const getConcentration = (tm) => {
-    return (c / ((ts - te) ** 2)) * ((tm - te) ** 2);
-  };
+
+  var len = boids.length * 2;
+  var bufsize = len * 4;
+  var bufptr = Module._malloc(bufsize);
+  Module._memset(bufptr, 0, bufsize);
+  var buf = new Float32Array(Module.HEAPF32.buffer, bufptr, len);
+  for (var i = 0; i < len;i += 2){
+    buf[i] = boids[i/2].x;
+    buf[i+1] = boids[i/2].y;
+  }
+
   const drawByConcentration = (boids, x1, y1, cellSize) => {
-    const x2 = x1 + cellSize;
-    const y2 = y1 + cellSize;
+    const flg = get_flg(len, buf.byteOffset, x1, y1, cellSize, c, ts, te, clim);
 
-    const vertexes = [
-      [x1, y1], [x2, y1],
-      [x1, y2], [x2, y2],
-    ];
+    // =========== get flg by js =============
+    // const x2 = x1 + cellSize;
+    // const y2 = y1 + cellSize;
 
-    const clim = 3;
-    const vc = vertexes.map((v) => {
-      const [x, y] = v;
+    // const vertexes = [
+    //   [x1, y1], [x2, y1],
+    //   [x1, y2], [x2, y2],
+    // ];
 
-      let sum = 0;
-      boids.forEach((boid) => {
-        const d = getDistance(boid.x, boid.y, x, y);
-        const c = getConcentration(d);
+    // const vc = vertexes.map((v) => {
+    //   const [x, y] = v;
 
-        if (d <= te) {
-          sum += c;
-        }
-      });
+    //   let sum = 0;
+    //   boids.forEach((boid) => {
+    //     const d = getDistance(boid.x, boid.y, x, y);
+    //     const c = getConcentration(d);
 
-      return sum;
-    });
+    //     if (d <= te) {
+    //       sum += c;
+    //     }
+    //   });
 
-    const flg = vc.map((c) => {
-      return c >= clim ? "1" : "0";
-    }).join("");
+    //   return sum;
+    // });
 
+    // const jsflg = vc.map((c) => {
+    //   return c >= clim ? "1" : "0";
+    // }).join("");
+    // ========================
     if (flg === "1111" || flg === "0000") {
       return;
     }
@@ -165,7 +185,6 @@ const renderStage = () => {
 
     // ctx.strokeStyle = "#fff";
 
-    let ary = [];
     // holizontal
     if (flg === "1100" || flg === "0011") {
       const y3 = y2 * (Math.abs(c1 - clim) / Math.abs(c1 - c3)) + y1 * (Math.abs(c3 - clim) / Math.abs(c1 - c3));
@@ -240,13 +259,16 @@ const renderStage = () => {
   const ylim = boids.reduce((b1, b2) => ({y: Math.max(b1.y, b2.y)}), {y: 0}).y + te;
   const division = 8;
 
+  console.time("draw")
   for (let x = xmin; x <= xlim; x += division) {
     for (let y = ymin; y <= ylim; y += division) {
       drawByConcentration(boids, x, y, division);
     }
   }
-
-  requestAnimationFrame(renderStage);
+  console.timeEnd("draw")
+  Module._free(bufptr); 
+  
+  // requestAnimationFrame(renderStage);
 };
 
 export default class Canvas extends React.Component<{}, {}> {
@@ -264,7 +286,7 @@ export default class Canvas extends React.Component<{}, {}> {
   render() {
     return (
       <Wrapper id="wrapper" className="wrapper">
-        <canvas id="stage" className="stage" />
+        <canvas id="stage" className="stage" style={{display: "none"}} />
       </Wrapper>
     );
   }

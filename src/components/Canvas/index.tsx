@@ -143,36 +143,36 @@ const renderStage = () => {
   }
 
   const drawByConcentration = (boids, x1, y1, cellSize) => {
-    const flg = get_flg(len, buf.byteOffset, x1, y1, cellSize, c, ts, te, clim);
+    // const flg = get_flg(len, buf.byteOffset, x1, y1, cellSize, c, ts, te, clim);
 
     // =========== get flg by js =============
-    // const x2 = x1 + cellSize;
-    // const y2 = y1 + cellSize;
+    const x2 = x1 + cellSize;
+    const y2 = y1 + cellSize;
 
-    // const vertexes = [
-    //   [x1, y1], [x2, y1],
-    //   [x1, y2], [x2, y2],
-    // ];
+    const vertexes = [
+      [x1, y1], [x2, y1],
+      [x1, y2], [x2, y2],
+    ];
 
-    // const vc = vertexes.map((v) => {
-    //   const [x, y] = v;
+    const vc = vertexes.map((v) => {
+      const [x, y] = v;
 
-    //   let sum = 0;
-    //   boids.forEach((boid) => {
-    //     const d = getDistance(boid.x, boid.y, x, y);
-    //     const c = getConcentration(d);
+      let sum = 0;
+      boids.forEach((boid) => {
+        const d = getDistance(boid.x, boid.y, x, y);
+        const c = getConcentration(d);
 
-    //     if (d <= te) {
-    //       sum += c;
-    //     }
-    //   });
+        if (d <= te) {
+          sum += c;
+        }
+      });
 
-    //   return sum;
-    // });
+      return sum;
+    });
 
-    // const jsflg = vc.map((c) => {
-    //   return c >= clim ? "1" : "0";
-    // }).join("");
+    const flg = vc.map((c) => {
+      return c >= clim ? "1" : "0";
+    }).join("");
     // ========================
     if (flg === "1111" || flg === "0000") {
       return;

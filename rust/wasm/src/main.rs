@@ -13,10 +13,6 @@ pub extern fn get_concentration(tm: f32, c: f32, ts: f32, te: f32) -> f32 {
     (c / ((ts - te).powi(2))) * ((tm - te).powi(2))
 }
 
-use std::mem::forget;
-use std::ffi::CString;
-use std::os::raw::c_char;
-
 #[no_mangle]
 // pub extern fn get_flg(_len: i32, ptr: *const f32, x1: f32, y1: f32, cell_size: f32, c: f32, ts: f32, te: f32, clim: f32) -> *const c_char {
 //     let len = _len as usize;
@@ -30,11 +26,11 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
         (x1, y2), (x2, y2),
     ];
 
-    let vc = vertexes.into_iter().map(|v| {
+    let vc: Vec<_> = vertexes.iter().map(|v| {
         let &(x, y) = v;
-        let mut sum = 0.0;
+        let mut sum: f32 = 0.0;
 
-        for (i, _) in slice.into_iter().enumerate() {
+        for (i, _) in slice.iter().enumerate() {
             if i % 2 != 0 { continue; }
 
             let boid_x = slice[i];
@@ -48,33 +44,28 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
         }
 
         sum
-    });
+    }).collect();
 
     // TODO: なぜか01を逆にするとjsと出力が同じになるっぽい？？？
     let flgs = [0x1000, 0x0100, 0x0010, 0x0001];
     let mut flg = 0x0000;
-    for (i, n) in vc.into_iter().enumerate() {
+    for (i, &n) in vc.iter().enumerate() {
         if n >= clim {
             flg |= flgs[i];
         }
     }
-
     let flg: String = format!("{:04x}", flg);
-    // let s = CString::new(flg_str).unwrap();
-    // let p = s.as_ptr();
-    // forget(s);
-    // p
 
     if flg == "1111" || flg == "0000" {
         return [0.0; 4]
     }
 
-    // ここパターンで代入できないのか
-    let c1: f32 = vc.into_iter().nth(0);
-    let c2: f32 = vc.into_iter().nth(1);
-    let c3: f32 = vc.into_iter().nth(2);
-    let c4: f32 = vc.into_iter().nth(3);
     let mut lines = [0.0; 4];
+    let c1 = vc[0];
+    let c2 = vc[1];
+    let c3 = vc[2];
+    let c4 = vc[3];
+    println!("{}, {}, {}, {}", c1, c2, c3, c4);
 
     if flg == "1100" || flg == "0011" {
         let y3 = y2 * ((c1 - clim).abs() / (c1 - c3).abs()) + y1 * ((c3 - clim).abs() / (c1 - c3).abs());

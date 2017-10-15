@@ -65,13 +65,48 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
     let c2 = vc[1];
     let c3 = vc[2];
     let c4 = vc[3];
-    println!("{}, {}, {}, {}", c1, c2, c3, c4);
 
+    // horizontal
     if flg == "1100" || flg == "0011" {
         let y3 = y2 * ((c1 - clim).abs() / (c1 - c3).abs()) + y1 * ((c3 - clim).abs() / (c1 - c3).abs());
         let y4 = y2 * ((c2 - clim).abs() / (c2 - c4).abs()) + y1 * ((c4 - clim).abs() / (c2 - c4).abs());
 
         lines = [x1, y3, x2, y4];
+    }
+    // vertical
+    if flg == "1010" || flg == "0101" {
+        let x3 = x2 * ((c1 - clim).abs() / (c1 - c2).abs()) + x1 * ((c2 - clim).abs() / (c1 - c2).abs());
+        let x4 = x2 * ((c3 - clim).abs() / (c3 - c4).abs()) + x1 * ((c4 - clim).abs() / (c3 - c4).abs());
+
+        lines = [x3, y1, x4, y2];
+    }
+    // left top
+    if flg == "1000" || flg == "0111" || flg == "1001" {
+        let x3 = x2 * ((c1 - clim).abs() / (c1 - c2).abs()) + x1 * ((c2 - clim).abs() / (c1 - c2).abs());
+        let y3 = y2 * ((c1 - clim).abs() / (c1 - c3).abs()) + y1 * ((c3 - clim).abs() / (c1 - c3).abs());
+
+        lines = [x3, y1, x1, y3];
+    }
+    // right top
+    if flg == "0100" || flg == "1011" || flg == "0110" {
+        let x3 = x1 * ((c2 - clim).abs() / (c2 - c1).abs()) + x2 * ((c1 - clim).abs() / (c2 - c1).abs());
+        let y3 = y2 * ((c2 - clim).abs() / (c2 - c4).abs()) + y1 * ((c4 - clim).abs() / (c2 - c4).abs());
+
+        lines = [x3, y1, x2, y3];
+    }
+    // left bottom
+    if flg == "1101" || flg == "0010" || flg == "0110" {
+        let x3 = x2 * ((c3 - clim).abs() / (c3 - c4).abs()) + x1 * ((c4 - clim).abs() / (c3 - c4).abs());
+        let y3 = y1 * ((c3 - clim).abs() / (c3 - c1).abs()) + y2 * ((c1 - clim).abs() / (c3 - c1).abs());
+
+        lines = [x3, y2, x1, y3];
+    }
+    // right bottom
+    if flg == "0001" || flg == "1110" || flg == "1001" {
+        let x3 = x1 * ((c4 - clim).abs() / (c4 - c3).abs()) + x2 * ((c3 - clim).abs() / (c4 - c3).abs());
+        let y3 = y1 * ((c4 - clim).abs() / (c4 - c2).abs()) + y2 * ((c2 - clim).abs() / (c4 - c2).abs());
+
+        lines = [x3, y2, x2, y3];
     }
 
     lines
@@ -95,61 +130,6 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
 //     ctx.lineto(x2, y4);
 //     ctx.stroke();
 //     ctx.closepath();
-// }
-// // vertical
-// if (flg === "1010" || flg === "0101") {
-//     const x3 = x2 * (Math.abs(c1 - clim) / Math.abs(c1 - c2)) + x1 * (Math.abs(c2 - clim) / Math.abs(c1 - c2));
-//     const x4 = x2 * (Math.abs(c3 - clim) / Math.abs(c3 - c4)) + x1 * (Math.abs(c4 - clim) / Math.abs(c3 - c4));
-
-//     ctx.beginPath();
-//     ctx.moveTo(x3, y1);
-//     ctx.lineTo(x4, y2);
-//     ctx.stroke();
-//     ctx.closePath();
-// }
-// // left top
-// if (flg === "1000" || flg === "0111" || flg === "1001") {
-//     const x3 = x2 * (Math.abs(c1 - clim) / Math.abs(c1 - c2)) + x1 * (Math.abs(c2 - clim) / Math.abs(c1 - c2));
-//     const y3 = y2 * (Math.abs(c1 - clim) / Math.abs(c1 - c3)) + y1 * (Math.abs(c3 - clim) / Math.abs(c1 - c3));
-
-//     ctx.beginPath();
-//     ctx.moveTo(x3, y1);
-//     ctx.lineTo(x1, y3);
-//     ctx.stroke();
-//     ctx.closePath();
-// }
-// // right top
-// if (flg === "0100" || flg === "1011" || flg === "0110") {
-//     const x3 = x1 * (Math.abs(c2 - clim) / Math.abs(c2 - c1)) + x2 * (Math.abs(c1 - clim) / Math.abs(c2 - c1));
-//     const y3 = y2 * (Math.abs(c2 - clim) / Math.abs(c2 - c4)) + y1 * (Math.abs(c4 - clim) / Math.abs(c2 - c4));
-
-//     ctx.beginPath();
-//     ctx.moveTo(x3, y1);
-//     ctx.lineTo(x2, y3);
-//     ctx.stroke();
-//     ctx.closePath();
-// }
-// // left bottom
-// if (flg === "1101" || flg === "0010" || flg === "0110") {
-//     const x3 = x2 * (Math.abs(c3 - clim) / Math.abs(c3 - c4)) + x1 * (Math.abs(c4 - clim) / Math.abs(c3 - c4));
-//     const y3 = y1 * (Math.abs(c3 - clim) / Math.abs(c3 - c1)) + y2 * (Math.abs(c1 - clim) / Math.abs(c3 - c1));
-
-//     ctx.beginPath();
-//     ctx.moveTo(x3, y2);
-//     ctx.lineTo(x1, y3);
-//     ctx.stroke();
-//     ctx.closePath();
-// }
-// // right bottom
-// if (flg === "0001" || flg === "1110" || flg === "1001") {
-//     const x3 = x1 * (Math.abs(c4 - clim) / Math.abs(c4 - c3)) + x2 * (Math.abs(c3 - clim) / Math.abs(c4 - c3));
-//     const y3 = y1 * (Math.abs(c4 - clim) / Math.abs(c4 - c2)) + y2 * (Math.abs(c2 - clim) / Math.abs(c4 - c2));
-
-//     ctx.beginPath();
-//     ctx.moveTo(x3, y2);
-//     ctx.lineTo(x2, y3);
-//     ctx.stroke();
-//     ctx.closePath();
 // }
 
 

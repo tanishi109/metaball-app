@@ -23,10 +23,10 @@ function createWindow () {
     width: size.width,
     height: size.height,
     frame: false,
-    // transparent: true,
-    // resizable: false,
-    // alwaysOnTop: true,
-    // focusable: false,
+    transparent: true,
+    resizable: false,
+    alwaysOnTop: true,
+    focusable: false,
   })
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -35,9 +35,9 @@ function createWindow () {
     slashes: true,
   }))
 
-  // mainWindow.setIgnoreMouseEvents(true);
+  mainWindow.setIgnoreMouseEvents(true);
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

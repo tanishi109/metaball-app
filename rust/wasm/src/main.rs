@@ -14,10 +14,10 @@ pub extern fn get_concentration(tm: f32, c: f32, ts: f32, te: f32) -> f32 {
 }
 
 #[no_mangle]
-// pub extern fn get_flg(_len: i32, ptr: *const f32, x1: f32, y1: f32, cell_size: f32, c: f32, ts: f32, te: f32, clim: f32) -> *const c_char {
-//     let len = _len as usize;
-//     let slice: &[f32] = unsafe { std::slice::from_raw_parts(ptr, len) };
-pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, ts: f32, te: f32, clim: f32) -> [f32; 4] {
+pub extern fn get_flg(_len: i32, ptr: *const f32, x1: f32, y1: f32, cell_size: f32, c: f32, ts: f32, te: f32, clim: f32, _r_len: i32, r_ptr: *mut f32) -> f32 {
+    let len = _len as usize;
+    let slice: &[f32] = unsafe { std::slice::from_raw_parts(ptr, len) };
+// pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, ts: f32, te: f32, clim: f32) -> f32 {
     let x2 = x1 + cell_size;
     let y2 = y1 + cell_size;
 
@@ -55,12 +55,12 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
         }
     }
     let flg: String = format!("{:04x}", flg);
+    let mut lines = vec![0.0, 0.0, 0.0, 0.0];
 
     if flg == "1111" || flg == "0000" {
-        return [0.0; 4]
+        return 0.0
     }
 
-    let mut lines = [0.0; 4];
     let c1 = vc[0];
     let c2 = vc[1];
     let c3 = vc[2];
@@ -71,45 +71,49 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
         let y3 = y2 * ((c1 - clim).abs() / (c1 - c3).abs()) + y1 * ((c3 - clim).abs() / (c1 - c3).abs());
         let y4 = y2 * ((c2 - clim).abs() / (c2 - c4).abs()) + y1 * ((c4 - clim).abs() / (c2 - c4).abs());
 
-        lines = [x1, y3, x2, y4];
+        lines = vec![x1, y3, x2, y4];
     }
     // vertical
     if flg == "1010" || flg == "0101" {
         let x3 = x2 * ((c1 - clim).abs() / (c1 - c2).abs()) + x1 * ((c2 - clim).abs() / (c1 - c2).abs());
         let x4 = x2 * ((c3 - clim).abs() / (c3 - c4).abs()) + x1 * ((c4 - clim).abs() / (c3 - c4).abs());
 
-        lines = [x3, y1, x4, y2];
+        lines = vec![x3, y1, x4, y2];
     }
     // left top
     if flg == "1000" || flg == "0111" || flg == "1001" {
         let x3 = x2 * ((c1 - clim).abs() / (c1 - c2).abs()) + x1 * ((c2 - clim).abs() / (c1 - c2).abs());
         let y3 = y2 * ((c1 - clim).abs() / (c1 - c3).abs()) + y1 * ((c3 - clim).abs() / (c1 - c3).abs());
 
-        lines = [x3, y1, x1, y3];
+        lines = vec![x3, y1, x1, y3];
     }
     // right top
     if flg == "0100" || flg == "1011" || flg == "0110" {
         let x3 = x1 * ((c2 - clim).abs() / (c2 - c1).abs()) + x2 * ((c1 - clim).abs() / (c2 - c1).abs());
         let y3 = y2 * ((c2 - clim).abs() / (c2 - c4).abs()) + y1 * ((c4 - clim).abs() / (c2 - c4).abs());
 
-        lines = [x3, y1, x2, y3];
+        lines = vec![x3, y1, x2, y3];
     }
     // left bottom
     if flg == "1101" || flg == "0010" || flg == "0110" {
         let x3 = x2 * ((c3 - clim).abs() / (c3 - c4).abs()) + x1 * ((c4 - clim).abs() / (c3 - c4).abs());
         let y3 = y1 * ((c3 - clim).abs() / (c3 - c1).abs()) + y2 * ((c1 - clim).abs() / (c3 - c1).abs());
 
-        lines = [x3, y2, x1, y3];
+        lines = vec![x3, y2, x1, y3];
     }
     // right bottom
     if flg == "0001" || flg == "1110" || flg == "1001" {
         let x3 = x1 * ((c4 - clim).abs() / (c4 - c3).abs()) + x2 * ((c3 - clim).abs() / (c4 - c3).abs());
         let y3 = y1 * ((c4 - clim).abs() / (c4 - c2).abs()) + y2 * ((c2 - clim).abs() / (c4 - c2).abs());
 
-        lines = [x3, y2, x2, y3];
+        lines = vec![x3, y2, x2, y3];
     }
 
-    lines
+    let r_len = _r_len as usize;
+    let v: Vec<f32> = lines;
+    let mut res: &mut [f32] = unsafe { std::slice::from_raw_parts_mut(r_ptr, r_len) };
+    res.clone_from_slice(&v.as_slice());
+    1.0
 }
 
 
@@ -134,5 +138,7 @@ pub extern fn get_flg(slice: &[f32], x1: f32, y1: f32, cell_size: f32, c: f32, t
 
 
 fn main() {
-    get_flg(&[9.0, 8.0, 7.0, 6.0], 0.0, 0.0, 8.0, 10_f32, 5_f32, 40_f32, 3_f32);
+    // let a = get_flg(&[9.0, 8.0, 7.0, 6.0], 0.0, 0.0, 8.0, 10_f32, 5_f32, 40_f32, 3_f32);
+
+    // println!("{:?}", a);
 }

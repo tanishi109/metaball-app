@@ -33,7 +33,7 @@ const getConcentration = (tm) => {
   return get_concentration(tm, c, ts, te);
 };
 
-const get_flg = window.Module.cwrap('get_flg', 'string', ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
+const get_flg = window.Module.cwrap('get_flg', 'number', ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
 
 const initStage = () => {
   const canvas = document.getElementById("stage");
@@ -143,114 +143,130 @@ const renderStage = () => {
   }
 
   const drawByConcentration = (boids, x1, y1, cellSize) => {
-    // const flg = get_flg(len, buf.byteOffset, x1, y1, cellSize, c, ts, te, clim);
+    // console.log("** get_flg")
+
+    const r_len = 4;
+    const r_bufsize = r_len * 4;
+    const r_bufptr = Module._malloc(r_bufsize);
+    Module._memset(r_bufptr, 0, r_bufsize)
+    const r_buf = new Float32Array(Module.HEAPF32.buffer, r_bufptr, r_len);
+    const got_flg = get_flg(len, buf.byteOffset, x1, y1, cellSize, c, ts, te, clim, r_len, r_buf.byteOffset);
+    if (got_flg !== 0.0) {
+      ctx.beginPath();
+      ctx.moveTo(r_buf[0], r_buf[1]);
+      ctx.lineTo(r_buf[2], r_buf[3]);
+      ctx.strokeStyle = "#efefef";
+      ctx.stroke();
+      ctx.closePath();
+    }
+    Module._free(r_bufptr); 
 
     // =========== get flg by js =============
-    const x2 = x1 + cellSize;
-    const y2 = y1 + cellSize;
+    // const x2 = x1 + cellSize;
+    // const y2 = y1 + cellSize;
 
-    const vertexes = [
-      [x1, y1], [x2, y1],
-      [x1, y2], [x2, y2],
-    ];
+    // const vertexes = [
+    //   [x1, y1], [x2, y1],
+    //   [x1, y2], [x2, y2],
+    // ];
 
-    const vc = vertexes.map((v) => {
-      const [x, y] = v;
+    // const vc = vertexes.map((v) => {
+    //   const [x, y] = v;
 
-      let sum = 0;
-      boids.forEach((boid) => {
-        const d = getDistance(boid.x, boid.y, x, y);
-        const c = getConcentration(d);
+    //   let sum = 0;
+    //   boids.forEach((boid) => {
+    //     const d = getDistance(boid.x, boid.y, x, y);
+    //     const c = getConcentration(d);
 
-        if (d <= te) {
-          sum += c;
-        }
-      });
+    //     if (d <= te) {
+    //       sum += c;
+    //     }
+    //   });
 
-      return sum;
-    });
+    //   return sum;
+    // });
 
-    const flg = vc.map((c) => {
-      return c >= clim ? "1" : "0";
-    }).join("");
-    // ========================
-    if (flg === "1111" || flg === "0000") {
-      return;
-    }
+    // const flg = vc.map((c) => {
+    //   return c >= clim ? "1" : "0";
+    // }).join("");
+    // // ========================
+    // if (flg === "1111" || flg === "0000") {
+    //   return;
+    // }
 
-    const [
-      c1, c2,
-      c3, c4,
-    ] = vc;
+    // const [
+    //   c1, c2,
+    //   c3, c4,
+    // ] = vc;
 
-    // ctx.strokeStyle = "#fff";
+    // // ctx.strokeStyle = "#fff";
 
-    // holizontal
-    if (flg === "1100" || flg === "0011") {
-      const y3 = y2 * (Math.abs(c1 - clim) / Math.abs(c1 - c3)) + y1 * (Math.abs(c3 - clim) / Math.abs(c1 - c3));
-      const y4 = y2 * (Math.abs(c2 - clim) / Math.abs(c2 - c4)) + y1 * (Math.abs(c4 - clim) / Math.abs(c2 - c4));
+    // // holizontal
+    // if (flg === "1100" || flg === "0011") {
+    //   const y3 = y2 * (Math.abs(c1 - clim) / Math.abs(c1 - c3)) + y1 * (Math.abs(c3 - clim) / Math.abs(c1 - c3));
+    //   const y4 = y2 * (Math.abs(c2 - clim) / Math.abs(c2 - c4)) + y1 * (Math.abs(c4 - clim) / Math.abs(c2 - c4));
       
-      ctx.beginPath();
-      ctx.moveTo(x1, y3);
-      ctx.lineTo(x2, y4);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    // vertical
-    if (flg === "1010" || flg === "0101") {
-      const x3 = x2 * (Math.abs(c1 - clim) / Math.abs(c1 - c2)) + x1 * (Math.abs(c2 - clim) / Math.abs(c1 - c2));
-      const x4 = x2 * (Math.abs(c3 - clim) / Math.abs(c3 - c4)) + x1 * (Math.abs(c4 - clim) / Math.abs(c3 - c4));
+    //   ctx.beginPath();
+    //   ctx.moveTo(x1, y3);
+    //   ctx.lineTo(x2, y4);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // // vertical
+    // if (flg === "1010" || flg === "0101") {
+    //   const x3 = x2 * (Math.abs(c1 - clim) / Math.abs(c1 - c2)) + x1 * (Math.abs(c2 - clim) / Math.abs(c1 - c2));
+    //   const x4 = x2 * (Math.abs(c3 - clim) / Math.abs(c3 - c4)) + x1 * (Math.abs(c4 - clim) / Math.abs(c3 - c4));
 
-      ctx.beginPath();
-      ctx.moveTo(x3, y1);
-      ctx.lineTo(x4, y2);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    // left top
-    if (flg === "1000" || flg === "0111" || flg === "1001") {
-      const x3 = x2 * (Math.abs(c1 - clim) / Math.abs(c1 - c2)) + x1 * (Math.abs(c2 - clim) / Math.abs(c1 - c2));
-      const y3 = y2 * (Math.abs(c1 - clim) / Math.abs(c1 - c3)) + y1 * (Math.abs(c3 - clim) / Math.abs(c1 - c3));
+    //   ctx.beginPath();
+    //   ctx.moveTo(x3, y1);
+    //   ctx.lineTo(x4, y2);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // // left top
+    // if (flg === "1000" || flg === "0111" || flg === "1001") {
+    //   const x3 = x2 * (Math.abs(c1 - clim) / Math.abs(c1 - c2)) + x1 * (Math.abs(c2 - clim) / Math.abs(c1 - c2));
+    //   const y3 = y2 * (Math.abs(c1 - clim) / Math.abs(c1 - c3)) + y1 * (Math.abs(c3 - clim) / Math.abs(c1 - c3));
 
-      ctx.beginPath();
-      ctx.moveTo(x3, y1);
-      ctx.lineTo(x1, y3);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    // right top
-    if (flg === "0100" || flg === "1011" || flg === "0110") {
-      const x3 = x1 * (Math.abs(c2 - clim) / Math.abs(c2 - c1)) + x2 * (Math.abs(c1 - clim) / Math.abs(c2 - c1));
-      const y3 = y2 * (Math.abs(c2 - clim) / Math.abs(c2 - c4)) + y1 * (Math.abs(c4 - clim) / Math.abs(c2 - c4));
+    //   ctx.beginPath();
+    //   ctx.moveTo(x3, y1);
+    //   ctx.lineTo(x1, y3);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // // right top
+    // if (flg === "0100" || flg === "1011" || flg === "0110") {
+    //   const x3 = x1 * (Math.abs(c2 - clim) / Math.abs(c2 - c1)) + x2 * (Math.abs(c1 - clim) / Math.abs(c2 - c1));
+    //   const y3 = y2 * (Math.abs(c2 - clim) / Math.abs(c2 - c4)) + y1 * (Math.abs(c4 - clim) / Math.abs(c2 - c4));
 
-      ctx.beginPath();
-      ctx.moveTo(x3, y1);
-      ctx.lineTo(x2, y3);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    // left bottom
-    if (flg === "1101" || flg === "0010" || flg === "0110") {
-      const x3 = x2 * (Math.abs(c3 - clim) / Math.abs(c3 - c4)) + x1 * (Math.abs(c4 - clim) / Math.abs(c3 - c4));
-      const y3 = y1 * (Math.abs(c3 - clim) / Math.abs(c3 - c1)) + y2 * (Math.abs(c1 - clim) / Math.abs(c3 - c1));
+    //   ctx.beginPath();
+    //   ctx.moveTo(x3, y1);
+    //   ctx.lineTo(x2, y3);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // // left bottom
+    // if (flg === "1101" || flg === "0010" || flg === "0110") {
+    //   const x3 = x2 * (Math.abs(c3 - clim) / Math.abs(c3 - c4)) + x1 * (Math.abs(c4 - clim) / Math.abs(c3 - c4));
+    //   const y3 = y1 * (Math.abs(c3 - clim) / Math.abs(c3 - c1)) + y2 * (Math.abs(c1 - clim) / Math.abs(c3 - c1));
 
-      ctx.beginPath();
-      ctx.moveTo(x3, y2);
-      ctx.lineTo(x1, y3);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    // right bottom
-    if (flg === "0001" || flg === "1110" || flg === "1001") {
-      const x3 = x1 * (Math.abs(c4 - clim) / Math.abs(c4 - c3)) + x2 * (Math.abs(c3 - clim) / Math.abs(c4 - c3));
-      const y3 = y1 * (Math.abs(c4 - clim) / Math.abs(c4 - c2)) + y2 * (Math.abs(c2 - clim) / Math.abs(c4 - c2));
+    //   ctx.beginPath();
+    //   ctx.moveTo(x3, y2);
+    //   ctx.lineTo(x1, y3);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // // right bottom
+    // if (flg === "0001" || flg === "1110" || flg === "1001") {
+    //   const x3 = x1 * (Math.abs(c4 - clim) / Math.abs(c4 - c3)) + x2 * (Math.abs(c3 - clim) / Math.abs(c4 - c3));
+    //   const y3 = y1 * (Math.abs(c4 - clim) / Math.abs(c4 - c2)) + y2 * (Math.abs(c2 - clim) / Math.abs(c4 - c2));
 
-      ctx.beginPath();
-      ctx.moveTo(x3, y2);
-      ctx.lineTo(x2, y3);
-      ctx.stroke();
-      ctx.closePath();
-    }
+    //   ctx.beginPath();
+    //   ctx.moveTo(x3, y2);
+    //   ctx.lineTo(x2, y3);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
   };
 
   const xmin = boids.reduce((b1, b2) => ({x: Math.min(b1.x, b2.x)}), {x: width}).x - te;
@@ -259,16 +275,16 @@ const renderStage = () => {
   const ylim = boids.reduce((b1, b2) => ({y: Math.max(b1.y, b2.y)}), {y: 0}).y + te;
   const division = 8;
 
-  console.time("draw")
+  // console.time("draw")
   for (let x = xmin; x <= xlim; x += division) {
     for (let y = ymin; y <= ylim; y += division) {
       drawByConcentration(boids, x, y, division);
     }
   }
-  console.timeEnd("draw")
+  // console.timeEnd("draw")
   Module._free(bufptr); 
   
-  // requestAnimationFrame(renderStage);
+  requestAnimationFrame(renderStage);
 };
 
 export default class Canvas extends React.Component<{}, {}> {
@@ -286,7 +302,7 @@ export default class Canvas extends React.Component<{}, {}> {
   render() {
     return (
       <Wrapper id="wrapper" className="wrapper">
-        <canvas id="stage" className="stage" style={{display: "none"}} />
+        <canvas id="stage" className="stage" />
       </Wrapper>
     );
   }
